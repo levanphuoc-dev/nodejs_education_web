@@ -3,6 +3,9 @@ const express = require('express');
 const morgan = require('morgan');
 const handlebars = require('express-handlebars');
 
+const methodOverride = require('method-override');
+
+const route = require('./routes');
 const db = require('./config/db');
 
 // Connect to DB
@@ -11,7 +14,6 @@ db.connect();
 const app = express();
 const port = 3000;
 
-const route = require('./routes');
 
 // public các file trong thư mục này.
 app.use(express.static(path.join(__dirname, 'public')));
@@ -20,6 +22,8 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(express.json());
+
+app.use(methodOverride('_method'));
 
 // HTTP logger
 app.use(morgan('combined'));
@@ -32,7 +36,6 @@ app.engine(
         helpers: {
             sum: (a, b) => a + b,
         },
-        defaultLayout: 'main'
     }),
 );
 app.set('view engine', 'hbs');
